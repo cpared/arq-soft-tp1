@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "target": "ES2021",
+      "outDir": "./build",
+      "esModuleInterop": true,
+      "sourceMap": true,
+      // "allowImportingTsExtensions":true,
+      "noEmit": true,
+      "emitDeclarationOnly": false,
+    },
+    "include": ["src/**/*"],
+}
