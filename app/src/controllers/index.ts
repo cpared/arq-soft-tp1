@@ -12,13 +12,20 @@ export class IndexController {
 
 
 export class SpaceflightController {
+
+  spaceflightService: SpaceflightService;
+
   
+  /**
+   *
+   */
+  constructor() {
+    this.spaceflightService = SpaceflightService.create();
+  }
 
   public async getIndex(req: Request, res: Response): Promise<void> {
 
-    const service = SpaceflightService.create(); 
-
-    const news = await service.getNews();
+    const news = await this.spaceflightService.getNews();
 
     res.send(news);
   }
