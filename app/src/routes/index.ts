@@ -24,7 +24,7 @@ function setSpaceflightRoutes(router: Router) {
   const spaceflightController = new SpaceflightController();
 
   
-  router.get('/space', (req: Request, res: Response) => {
+  router.get('/spaceflight_news', (req: Request, res: Response) => {
     spaceflightController.getIndex(req, res);
   });
 }

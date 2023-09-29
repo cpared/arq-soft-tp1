@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { SpaceflightService } from '../services/spaceflight';
+import { ISpaceflightService, SpaceflightService } from '../services/spaceflight';
 
 export class IndexController {
   public getPing(req: Request, res: Response) {
@@ -13,7 +13,7 @@ export class IndexController {
 
 export class SpaceflightController {
 
-  spaceflightService: SpaceflightService;
+  spaceflightService: ISpaceflightService;
 
   
   /**
