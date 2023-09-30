@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { SpaceflightService } from '../services/spaceflight';
 import { metarService } from '../services/metarService';
+import { quoteService } from '../services/quoteService';
 
 export class IndexController {
   public getPing(req: Request, res: Response) {
@@ -14,6 +15,13 @@ export class IndexController {
 class MetarController {
   public async getMetar(req: Request, res: Response, next: NextFunction) {
     return metarService.getMetar(req, res, next);
+  }
+}
+
+
+class QuoteController {
+  public async getQuote(req: Request, res: Response, next: NextFunction){
+    return quoteService.getQuote(req,res,next);
   }
 }
 
@@ -37,3 +45,4 @@ export class SpaceflightController {
 export const metarController = new MetarController();
 export const indexController = new IndexController();
 export const spaceflightController = new SpaceflightController();
+export const quoteController = new QuoteController();

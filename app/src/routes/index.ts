@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, Router } from 'express';
-import { indexController, spaceflightController, metarController } from '../controllers';
+import { indexController, spaceflightController, metarController, quoteController } from '../controllers';
 import { errorHandler } from '../middlewares/ErrorHandler';
 import 'express-async-errors';
 
@@ -16,6 +16,11 @@ router.get('/', (req: Request, res: Response) => {
 router.get('/metar', (req: Request, res: Response, next: NextFunction) => {
   metarController.getMetar(req, res, next);
 });
+
+router.get('/quote', (req: Request, res: Response, next: NextFunction) => {
+  quoteController.getQuote(req, res, next);
+});
+
 
 router.get('/space', (req: Request, res: Response) => {
   spaceflightController.getIndex(req, res);
