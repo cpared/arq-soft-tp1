@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { SpaceflightService } from '../services/spaceflight';
+import { metarService } from '../services/metarService';
 
 export class IndexController {
   public getPing(req: Request, res: Response) {
@@ -10,12 +11,15 @@ export class IndexController {
   }
 }
 
+class MetarController {
+  public async getMetar(req: Request, res: Response, next: NextFunction) {
+    return metarService.getMetar(req, res, next);
+  }
+}
 
 export class SpaceflightController {
-
   spaceflightService: SpaceflightService;
 
-  
   /**
    *
    */
@@ -24,9 +28,12 @@ export class SpaceflightController {
   }
 
   public async getIndex(req: Request, res: Response): Promise<void> {
-
     const news = await this.spaceflightService.getNews();
 
     res.send(news);
   }
 }
+
+export const metarController = new MetarController();
+export const indexController = new IndexController();
+export const spaceflightController = new SpaceflightController();
