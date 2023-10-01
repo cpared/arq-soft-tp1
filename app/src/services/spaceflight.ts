@@ -2,31 +2,32 @@ import { HttpService } from '../services/HTTP/HttpService';
 
 
 export interface ISpaceflightService {
-    getNews(): Promise<any>;
+    getNews(): Promise<string[]>;
 }
 
-
-export class SpaceflightService {
+export class SpaceflightService implements ISpaceflightService {
 
     private readonly httpService: HttpService;
-
+    private static instance: ISpaceflightService;
 
     constructor() {
         this.httpService = new HttpService('https://api.spaceflightnewsapi.net/v3/');
     }
 
     public static create() : ISpaceflightService {
-        return new SpaceflightService();
+      if (!SpaceflightService.instance) {
+          SpaceflightService.instance = new SpaceflightService();
+      }
+      return SpaceflightService.instance;
     }
     
-    public async getNews() {
+    public async getNews(): Promise<string[]> {
         try {
-            const news = await this.httpService.get('articles?_limit=2');
-            return news;
-            
+            const news = await this.httpService.get<{title:string}[]>('articles?_limit=5');
+            return news.map((article: {title:string}) => article.title);            
         } catch (error) {
             console.error(error);
-            return "Error"
+            return ["Error"] // TODO: throw error
         }
     }
 }
