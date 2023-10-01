@@ -22,8 +22,8 @@ router.get('/quote', (req: Request, res: Response, next: NextFunction) => {
 });
 
 
-router.get('/space', (req: Request, res: Response) => {
-  spaceflightController.getIndex(req, res);
+router.get('/spaceflight_news', (req: Request, res: Response, next: NextFunction) => {
+  spaceflightController.getNews(req, res, next);
 });
 
 router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
