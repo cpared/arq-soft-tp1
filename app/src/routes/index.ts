@@ -1,31 +1,39 @@
-import { Router } from 'express';
-import { IndexController, SpaceflightController } from '../controllers';
-import { Request, Response } from '../types';
+import { Request, Response, NextFunction, Router } from 'express';
+import { indexController, spaceflightController, metarController, quoteController } from '../controllers';
+import { errorHandler } from '../middlewares/ErrorHandler';
+import 'express-async-errors';
 
-export function setRoutes(router: Router): void {
+const router = Router();
 
-  setSpaceflightRoutes(router);
+router.get('/ping', (req: Request, res: Response) => {
+  indexController.getPing(req, res);
+});
+
+router.get('/', (req: Request, res: Response) => {
+  indexController.getIndex(req, res);
+});
+
+router.get('/metar', (req: Request, res: Response, next: NextFunction) => {
+  metarController.getMetar(req, res, next);
+});
+
+router.get('/quote', (req: Request, res: Response, next: NextFunction) => {
+  quoteController.getQuote(req, res, next);
+});
 
 
-  const indexController = new IndexController();
-  
-  router.get('/', (req: Request, res: Response) => {
-    indexController.getIndex(req, res);
-  });
-  
-  router.get('/ping', (req: Request, res: Response) => {
-    indexController.getPing(req, res);
-  });  
-}
+router.get('/spaceflight_news', (req: Request, res: Response, next: NextFunction) => {
+  spaceflightController.getNews(req, res, next);
+});
 
+router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.log('Error encountered:', err.message || err);
 
+  next(err);
+});
 
-function setSpaceflightRoutes(router: Router) {
-  const spaceflightController = new SpaceflightController();
+router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  errorHandler.handleError(err, res);
+});
 
-  
-  router.get('/spaceflight_news', (req: Request, res: Response) => {
-    spaceflightController.getIndex(req, res);
-  });
-}
-
+export default router;

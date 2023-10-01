@@ -1,19 +1,26 @@
-import express, { Application } from 'express';
-import { setRoutes } from './routes';
-import { Request, Response } from './types';
+import express, { Application, Router } from 'express';
+import router from './routes';
+import { AppError, HttpCode } from './types/AppError';
 
 export class App {
   private app: Application;
+  public server: any;
 
   constructor() {
     this.app = express();
     this.setupMiddleware();
-    setRoutes(this.app);
   }
 
   private setupMiddleware() {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+  }
+
+  public setRouter(router: Router){
+    this.app.use(router);
+    this.app.all('*', (req, res, next) => {
+      next(new AppError({description: `Route ${req.originalUrl} not found`, httpCode: HttpCode.NOT_FOUND}));
+    });
   }
 
   public start(port: number) {
@@ -24,4 +31,5 @@ export class App {
 }
 
 const app = new App();
+app.setRouter(router);
 app.start(3000);
