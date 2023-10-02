@@ -14,7 +14,6 @@ enum Url {
       try {
         const stationParam: any = req.query.station;
         const resp = await axios.get('https://api.spaceflightnewsapi.net/v3/articles?_limit=5');
-        console.log(resp);
 
         const titleArray = resp.data.map(function (news: { title: any; }) {return news.title});
 
