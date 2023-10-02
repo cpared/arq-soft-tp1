@@ -14,11 +14,14 @@ enum Url {
 
     public async getNews(req: Request, res: Response, next: NextFunction) {
       try {
+        //Creo un cliente redis y espero a que conecte
         const client = redis.createClient();
         await client.connect();
+
         const stationParam: any = req.query.station;
         const resp = await axios.get('https://api.spaceflightnewsapi.net/v3/articles?_limit=5');
 
+        //Chequeo la conexion
         client.on('connect', () => {
           console.log('Cliente Redis conectado');
         });
@@ -30,6 +33,7 @@ enum Url {
         
         const titleArray = resp.data.map(function (news: { title: any; }) {return news.title});
 
+        //Almaceno la respuesta en redis y chequeo que se alla guardado adecuadamente
         client.set("SpaceNews", JSON.stringify(titleArray));
         const value = await client.get("SpaceNews");
         console.log(value);
