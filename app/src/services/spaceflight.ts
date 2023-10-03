@@ -1,7 +1,9 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, response } from "express";
 import { AppError, HttpCode } from "../types/AppError";
 import * as redis from 'redis';
 
+
+//IMPORTANTE: La API se actualiza cada 10 minutos
 
 const axios = require('axios');
 
@@ -19,7 +21,7 @@ enum Url {
         await client.connect();
 
         const stationParam: any = req.query.station;
-        const resp = await axios.get('https://api.spaceflightnewsapi.net/v3/articles?_limit=5');
+        
 
         //Chequeo la conexion
         client.on('connect', () => {
@@ -29,16 +31,24 @@ enum Url {
         client.on('error', (err) => {
           console.error('Error en el cliente Redis:', err);
         });
-
         
-        const titleArray = resp.data.map(function (news: { title: any; }) {return news.title});
-
-        //Almaceno la respuesta en redis y chequeo que se alla guardado adecuadamente
-        client.set("SpaceNews", JSON.stringify(titleArray));
         const value = await client.get("SpaceNews");
-        console.log(value);
 
-        res.status(HttpCode.OK).send(titleArray);
+        if(value){
+          res.status(HttpCode.OK).send(value);
+        }else{
+
+          const resp = await axios.get('https://api.spaceflightnewsapi.net/v3/articles?_limit=5');
+          const titleArray = resp.data.map(function (news: { title: any; }) {return news.title});
+  
+          //Almaceno la respuesta en redis y chequeo que se alla guardado adecuadamente
+          client.set("SpaceNews", JSON.stringify(titleArray));
+          //const value = await client.get("SpaceNews");
+          console.log(value);
+  
+          res.status(HttpCode.OK).send(titleArray);
+        }
+
         
         
   
