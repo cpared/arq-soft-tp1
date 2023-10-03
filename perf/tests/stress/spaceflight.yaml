@@ -18,13 +18,13 @@ config:
     - name: ramp up
       duration: 60
       arrivalRate: 10
-      rampTo: 100
+      rampTo: 200
     - name: plain
       duration: 20
-      arrivalRate: 100
+      arrivalRate: 200
     - name: ramp down
       duration: 20
-      arrivalRate: 100
+      arrivalRate: 200
       rampTo: 10
     - name: post recovery
       duration: 20
