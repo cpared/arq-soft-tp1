@@ -26,10 +26,19 @@ config:
       duration: 20
       arrivalRate: 30
       rampTo: 1
-    
+  variables:
+    station: 
+      - "KJFK"
+      - "KLAX"
+      - "KORD"
+      - "KDFW"
+      - "KDEN"
+      - "KIAH"
+      - "KATL"
+      - "SAEZ"
 
 scenarios:
   - name: METAR (/metar)
     flow:
       - get:
-          url: '/metar'
+          url: '/metar?station={{ station }}'

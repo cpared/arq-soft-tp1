@@ -18,21 +18,30 @@ config:
     - name: ramp up
       duration: 60
       arrivalRate: 10
-      rampTo: 100
+      rampTo: 300
     - name: plain
       duration: 20
-      arrivalRate: 100
+      arrivalRate: 300
     - name: ramp down
-      duration: 20
-      arrivalRate: 100
+      duration: 30
+      arrivalRate: 300
       rampTo: 10
     - name: post recovery
       duration: 20
       arrivalRate: 10
-    
+  variables:
+    station: 
+      - "KJFK"
+      - "KLAX"
+      - "KORD"
+      - "KDFW"
+      - "KDEN"
+      - "KIAH"
+      - "KATL"
+      - "SAEZ"
 
 scenarios:
   - name: METAR (/metar)
     flow:
       - get:
-          url: '/metar'
+          url: '/metar?station={{ station }}'
