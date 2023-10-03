@@ -24,14 +24,24 @@ class MetarService {
   public async getMetar(req: Request, res: Response, next: NextFunction) {
     try {
       const stationParam: any = req.query.station;
-      const resp = await axios.get(this.buildURL(stationParam));
+            const resp = await axios.get(this.buildURL(stationParam));
       const parsed = this.parser.parse(resp.data);
-      const parsedResp = decode(parsed.response.data.METAR.raw_text);
+
+      if (parsed.response.data === '') {
+        return res.status(404).send('No data found to this station');
+      }
+
+      let metarData = parsed.response.data.METAR;
+      if(parsed.response.data.METAR.length > 1){
+        metarData = parsed.response.data.METAR[0];
+      }
+
+      const parsedResp = decode(metarData.raw_text);
 
       res.status(HttpCode.OK).send(parsedResp);
 
     } catch(err) {
-      res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err); // No deberia enviar el error crudo
+            res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err); // No deberia enviar el error crudo
       next(err);
     }
   }
