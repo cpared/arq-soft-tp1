@@ -27,7 +27,7 @@ config:
       arrivalRate: 100
       rampTo: 10
     - name: post recovery
-      duration: 30
+      duration: 20
       arrivalRate: 10
     
 
