@@ -399,7 +399,7 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "asPercent(stats.gauges.cadvisor.2c23-tp-1_node_1.memory_usage, 1952000000)",
+          "alias": "asPercent(stats.gauges.cadvisor.app_node_1.memory_usage, 1952000000)",
           "yaxis": 1
         }
       ],
@@ -497,8 +497,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "2c23-tp-1_node_1",
-          "value": "2c23-tp-1_node_1"
+          "text": "app_node_1",
+          "value": "app_node_1"
         },
         "error": null,
         "hide": 0,
@@ -509,18 +509,18 @@
         "options": [
           {
             "selected": true,
-            "text": "2c23-tp-1_node_1",
-            "value": "2c23-tp-1_node_1"
+            "text": "app_node_1",
+            "value": "app_node_1"
           },
           {
             "selected": false,
-            "text": "2c23-tp-1_node_2",
-            "value": "2c23-tp-1_node_2"
+            "text": "app_node_2",
+            "value": "app_node_2"
           },
           {
             "selected": false,
-            "text": "2c23-tp-1_node_3",
-            "value": "2c23-tp-1_node_3"
+            "text": "app_node_3",
+            "value": "app_node_3"
           },
           {
             "selected": false,
@@ -543,7 +543,7 @@
             "value": "2c23-tp-1_nginx_1"
           }
         ],
-        "query": "2c23-tp-1_node_1, 2c23-tp-1_node_2, 2c23-tp-1_node_3, 2c23-tp-1_cadvisor_1, 2c23-tp-1_grafana_1, 2c23-tp-1_graphite_1,  2c23-tp-1_nginx_1, 2c23-tp-1_bbox_1",
+        "query": "app_node_1, app_node_2, app_node_3, 2c23-tp-1_cadvisor_1, 2c23-tp-1_grafana_1, 2c23-tp-1_graphite_1,  2c23-tp-1_nginx_1, 2c23-tp-1_bbox_1",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
