@@ -44,8 +44,16 @@ services:
 
     node:
         build: .
+        links: 
+            - redis
         ports:
             - "3000:3000"
+    
+    redis:
+        image: redis
+        container_name: RedisService
+        ports:
+            - "6379:6379"
 
 
 volumes:
