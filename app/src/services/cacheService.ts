@@ -8,7 +8,7 @@ class CacheService {
     public async handleCache(key: string, url: string, req: Request, res: Response, next: NextFunction, tiempo: number){
         try {
             //Creo un cliente redis y espero a que conecte
-            const client = redis.createClient({host: 'redis', port: 6379});
+            const client = redis.createClient({url: 'redis://redis:6379'});
             await client.connect();
 
             //Chequeo la conexion
