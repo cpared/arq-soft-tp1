@@ -26,8 +26,6 @@ enum Url {
           res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err); // No deberia enviar el error crudo
           next(err);
         }
-
-
       }
     }
   
