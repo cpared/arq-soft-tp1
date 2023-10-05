@@ -4,7 +4,7 @@ import { AppError, HttpCode } from './types/AppError';
 import { rateLimit } from 'express-rate-limit'
 
 const limiter = rateLimit({
-	windowMs: 60 * 1000, // 60 sconds
+	windowMs: 20 * 1000, // 60 sconds
 	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
 	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
