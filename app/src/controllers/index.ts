@@ -66,3 +66,5 @@ export const metarController = new MetarController();
 export const indexController = new IndexController();
 export const spaceflightController = new SpaceController();
 export const quoteController = new QuoteController();
+
+
