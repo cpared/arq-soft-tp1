@@ -1,52 +1,72 @@
-import { NextFunction, Request, Response } from 'express';
-import { AppError, HttpCode } from '../types/AppError';
 import * as redis from 'redis';
-import axios from 'axios';
 
 class CacheService {
 
-    public async handleCache(key: string, url: string, req: Request, res: Response, next: NextFunction, tiempo: number){
-        try {
-            //Creo un cliente redis y espero a que conecte
-            const client = redis.createClient({url: 'redis://redis:6379'});
-            await client.connect();
+    private static instance: CacheService;
+    private client: redis.RedisClientType;
 
+    private constructor() {
+        this.client = redis.createClient({url: 'redis://redis:6379'});
+
+        //Chequeo la conexion
+        this.client.on('connect', () => {
+            console.log('Cliente Redis conectado');
+        });
+
+        this.client.on('error', (err: any) => {
+            console.error('Error en el cliente Redis:', err);
+        });
+    }
+
+    static create(): CacheService {
+        if (!CacheService.instance) {
+            CacheService.instance = new CacheService();
+        }
+        return CacheService.instance;
+    }
+
+    private async connect() {
+        try {
+            await this.client.connect();
             //Chequeo la conexion
-            client.on('connect', () => {
+            
+            this.client.on('connect', () => {
                 console.log('Cliente Redis conectado');
             });
 
-            client.on('error', (err) => {
+            this.client.on('error', (err: any) => {
                 console.error('Error en el cliente Redis:', err);
             });
-
-            const value = await client.get(key);
-
-            if (value) {
-                res.status(HttpCode.OK).send(value);
-            } else {
-
-                const resp = await axios.get(url);
-                const titleArray = resp.data.map(function (news: { title: any; }) { return news.title });
-
-                //Almaceno la respuesta en redis y chequeo que se alla guardado adecuadamente
-                client.set(key, JSON.stringify(titleArray));
-                //const value = await client.get("SpaceNews");
-                console.log(value);
-
-                client.expire(key, tiempo);
-
-                res.status(HttpCode.OK).send(titleArray);
-            }
-
-            client.quit();
-
-
         } catch (err) {
-            res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err); // No deberia enviar el error crudo
-            next(err);
+            console.error(err);
         }
     }
+
+    public async get(key: string){
+        try {
+            if (!this.client.isReady) {
+                console.log('Redis client is not connected, connecting now...');
+                await this.connect();
+            }
+            return await this.client.get(key);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    public async set(key: string, value: string, expiresSeconds: number) {
+        try {
+            if (!this.client.isReady) {
+                console.log('Redis client is not connected, connecting now...');
+                await this.connect();
+            }
+            this.client.set(key, value,{EX: expiresSeconds});
+        } catch (err) {
+            console.error(err);
+        }
+
+}
 }
 
-export const cacheService = new CacheService();
+
+export const cacheService = CacheService.create();
