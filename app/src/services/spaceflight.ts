@@ -24,7 +24,7 @@ const axios = require('axios');
           const resp = await axios.get(this.url);
           const titleArray = resp.data.map((news: { title: string; }) => news.title);
   
-          //Almaceno la respuesta en redis y chequeo que se alla guardado adecuadamente
+          // save in cache
           cacheService.set('Spaceflight', JSON.stringify(titleArray), this.expiresSeconds);
   
           res.status(HttpCode.OK).send(titleArray);

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { AppError, HttpCode } from "../types/AppError";
+import { HttpCode } from "../types/AppError";
+import { cacheService } from "./cacheService";
 
 const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
@@ -16,6 +17,7 @@ enum Url {
 
 class MetarService {
   private parser: any;
+  private readonly expiresSeconds: number = 10;
 
   constructor() {
     this.parser = new XMLParser();
@@ -24,21 +26,34 @@ class MetarService {
   public async getMetar(req: Request, res: Response, next: NextFunction) {
     try {
       const stationParam: any = req.query.station;
-            const resp = await axios.get(this.buildURL(stationParam));
-      const parsed = this.parser.parse(resp.data);
 
-      if (parsed.response.data === '') {
-        return res.status(404).send('No data found to this station');
-      }
+      const url = this.buildURL(stationParam);
+      const valueInCache = await cacheService.get(url);
+        
+        if(valueInCache){
+          console.log('cache response', valueInCache);
+          res.status(HttpCode.OK).send(valueInCache);
+        }else{
 
-      let metarData = parsed.response.data.METAR;
-      if(parsed.response.data.METAR.length > 1){
-        metarData = parsed.response.data.METAR[0];
-      }
-
-      const parsedResp = decode(metarData.raw_text);
-
-      res.status(HttpCode.OK).send(parsedResp);
+          const resp = await axios.get(this.buildURL(stationParam));
+          const parsed = this.parser.parse(resp.data);
+    
+          if (parsed.response.data === '') {
+            return res.status(404).send('No data found to this station');
+          }
+    
+          let metarData = parsed.response.data.METAR;
+          if(parsed.response.data.METAR.length > 1){
+            metarData = parsed.response.data.METAR[0];
+          }
+    
+          const parsedResp = decode(metarData.raw_text);
+    
+          // save in cache
+          cacheService.set(url, JSON.stringify(parsedResp), this.expiresSeconds);
+          
+          res.status(HttpCode.OK).send(parsedResp);
+        }
 
     } catch(err) {
             res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err); // No deberia enviar el error crudo
