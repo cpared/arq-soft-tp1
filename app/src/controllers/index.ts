@@ -36,13 +36,29 @@ class MetarController {
 
 class QuoteController {
   public async getQuote(req: Request, res: Response, next: NextFunction){
-    return quoteService.getQuote(req,res,next);
+    const initialTime = Date.now();
+    const response = await quoteService.getQuote(req, res, next);
+    const finalTime = Date.now();
+    
+    const totalTime = finalTime - initialTime;
+    console.log('Response time:', totalTime);
+    sendMetrics('quote-response-time', totalTime);
+
+    return response;
   }
 }
 
 class SpaceController {
   public async getNews(req: Request, res: Response, next: NextFunction){
-    return spaceService.getNews(req,res,next);
+    const initialTime = Date.now();
+    const response = await spaceService.getNews(req, res, next);
+    const finalTime = Date.now();
+    
+    const totalTime = finalTime - initialTime;
+    console.log('Response time:', totalTime);
+    sendMetrics('space-response-time', totalTime);
+
+    return response;
   }
 }
 

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError, HttpCode } from "../types/AppError";
 import { AxiosError } from "axios";
+import { sendMetrics } from "./metricsService";
 
 const axios = require('axios');
 
@@ -14,7 +15,12 @@ enum Url {
     public async getQuote(req: Request, res: Response, next: NextFunction) {
       try {
         const stationParam: any = req.query.station;
+
+        const startExternalApiTime = Date.now();
         const resp = await axios.get('https://api.quotable.io/quotes/random?limit=1');
+        const endExternalApiTime = Date.now();
+        const totalTime = endExternalApiTime - startExternalApiTime;
+        sendMetrics('quote-external-response-time', totalTime);
 
         res.status(HttpCode.OK).send(resp.data[0].content);
   
