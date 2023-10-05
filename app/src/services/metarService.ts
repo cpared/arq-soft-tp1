@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { HttpCode } from "../types/AppError";
 import { cacheService } from "./cacheService";
+import { sendMetrics } from "./metricsService";
 
 const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
