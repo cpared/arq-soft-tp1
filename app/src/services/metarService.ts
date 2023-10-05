@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError, HttpCode } from "../types/AppError";
+import { sendMetrics } from "./metricsService";
 
 const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
@@ -24,7 +25,14 @@ class MetarService {
   public async getMetar(req: Request, res: Response, next: NextFunction) {
     try {
       const stationParam: any = req.query.station;
-            const resp = await axios.get(this.buildURL(stationParam));
+
+      const startExternalApiTime = Date.now();
+      const resp = await axios.get(this.buildURL(stationParam));
+      const endExternalApiTime = Date.now();
+      const totalTime = endExternalApiTime - startExternalApiTime;
+      sendMetrics('metar-external-response-time', totalTime);
+
+      
       const parsed = this.parser.parse(resp.data);
 
       if (parsed.response.data === '') {
