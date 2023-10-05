@@ -39,13 +39,17 @@ services:
             - "/:/rootfs:ro"
             - "/var/run:/var/run:rw"
             - "/sys:/sys:ro"
-            - "/var/lib/docker/:/var/lib/docker:ro"
+            - "/var/snap/docker/common/var-lib-docker:/var/lib/docker:ro"
             - "grafana_config:/var/lib/grafana"
 
     node:
         build: .
-        ports:
-            - "3000:3000"
+        deploy:
+            mode: replicated
+            replicas: 3
+
+
+
 
 
 volumes:
