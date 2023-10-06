@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import { AppError, HttpCode } from "../types/AppError";
-import { sendMetrics } from "./metricsService";
+import { Request, Response, NextFunction } from 'express';
+import { AppError, HttpCode } from '../types/AppError';
+import { sendMetrics } from './metricsService';
 
 const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
@@ -25,31 +25,28 @@ class MetarService {
   public async getMetar(req: Request, res: Response, next: NextFunction) {
     try {
       const stationParam: any = req.query.station;
-
       const startExternalApiTime = Date.now();
       const resp = await axios.get(this.buildURL(stationParam));
       const endExternalApiTime = Date.now();
       const totalTime = endExternalApiTime - startExternalApiTime;
       sendMetrics('metar-external-response-time', totalTime);
 
-      
       const parsed = this.parser.parse(resp.data);
-
       if (parsed.response.data === '') {
-        return res.status(404).send('No data found to this station');
+        throw new AppError({
+          httpCode: HttpCode.BAD_REQUEST,
+          description: 'Response from metar is empty'
+        });
       }
 
       let metarData = parsed.response.data.METAR;
-      if(parsed.response.data.METAR.length > 1){
-        metarData = parsed.response.data.METAR[0];
+      if (metarData.length > 1) {
+        metarData = metarData[0];
       }
 
       const parsedResp = decode(metarData.raw_text);
-
       res.status(HttpCode.OK).send(parsedResp);
-
-    } catch(err) {
-            res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err); // No deberia enviar el error crudo
+    } catch (err) {
       next(err);
     }
   }

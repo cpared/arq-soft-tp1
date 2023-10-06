@@ -1,6 +1,7 @@
 import express, { Application, Router } from 'express';
 import router from './routes';
 import { AppError, HttpCode } from './types/AppError';
+import { errorHandler } from './middlewares/ErrorHandler';
 
 export class App {
   private app: Application;
@@ -16,11 +17,17 @@ export class App {
     this.app.use(express.urlencoded({ extended: true }));
   }
 
-  public setRouter(router: Router){
+  public setRouter(router: Router) {
     this.app.use(router);
     this.app.all('*', (req, res, next) => {
-      next(new AppError({description: `Route ${req.originalUrl} not found`, httpCode: HttpCode.NOT_FOUND}));
+      next(
+        new AppError({
+          description: `Route ${req.originalUrl} not found`,
+          httpCode: HttpCode.NOT_FOUND
+        })
+      );
     });
+    this.app.use(errorHandler);
   }
 
   public start(port: number) {

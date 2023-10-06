@@ -24,7 +24,7 @@ class MetarController {
     const initialTime = Date.now();
     const response = await metarService.getMetar(req, res, next);
     const finalTime = Date.now();
-    
+
     const totalTime = finalTime - initialTime;
     console.log('Response time:', totalTime);
     sendMetrics('metar-response-time', totalTime);
@@ -33,13 +33,12 @@ class MetarController {
   }
 }
 
-
 class QuoteController {
-  public async getQuote(req: Request, res: Response, next: NextFunction){
+  public async getQuote(req: Request, res: Response, next: NextFunction) {
     const initialTime = Date.now();
     const response = await quoteService.getQuote(req, res, next);
     const finalTime = Date.now();
-    
+
     const totalTime = finalTime - initialTime;
     console.log('Response time:', totalTime);
     sendMetrics('quote-response-time', totalTime);
@@ -49,11 +48,11 @@ class QuoteController {
 }
 
 class SpaceController {
-  public async getNews(req: Request, res: Response, next: NextFunction){
+  public async getNews(req: Request, res: Response, next: NextFunction) {
     const initialTime = Date.now();
     const response = await spaceService.getNews(req, res, next);
     const finalTime = Date.now();
-    
+
     const totalTime = finalTime - initialTime;
     console.log('Response time:', totalTime);
     sendMetrics('space-response-time', totalTime);
@@ -66,5 +65,3 @@ export const metarController = new MetarController();
 export const indexController = new IndexController();
 export const spaceflightController = new SpaceController();
 export const quoteController = new QuoteController();
-
-

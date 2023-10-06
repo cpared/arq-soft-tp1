@@ -13,7 +13,10 @@ export class HttpService {
   }
 
   public async post<T>(url: string, data: any): Promise<T> {
-    const response: AxiosResponse<T> = await axios.post(`${this.baseUrl}${url}`, data);
+    const response: AxiosResponse<T> = await axios.post(
+      `${this.baseUrl}${url}`,
+      data
+    );
     return response.data;
   }
 }
